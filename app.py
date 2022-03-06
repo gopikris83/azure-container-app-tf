@@ -5,6 +5,7 @@ import requests, os
 
 app = Flask(__name__)
 
+# App to print the User Agent Information
 @app.route('/')
 def welcome_message():
     info = "Welcome to 2022!"

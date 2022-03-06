@@ -1,15 +1,18 @@
 ###########################################################
 # Azure App Services
 ###########################################################
-resource "azurerm_resource_group" "tf-rg" {
-  name     = "azcontainerapp-rg"
-  location = var.az_region
+# resource "azurerm_resource_group" "tf-rg" {
+#   name     = "azcontainerapp-rg"
+#   location = var.az_region
+# }
+data "azurerm_resource_group" "tf-rg" {
+  name = "azcontainerapp-rg"
 }
 
 resource "azurerm_app_service_plan" "tf_app_service_plan" {
   name                = "${var.app_name}-app-service-plan"
-  location            = azurerm_resource_group.tf-rg.location
-  resource_group_name = azurerm_resource_group.tf-rg.name
+  location            = data.azurerm_resource_group.tf-rg.location
+  resource_group_name = data.azurerm_resource_group.tf-rg.name
   kind                = "Linux"
   reserved            = true
 
@@ -21,8 +24,8 @@ resource "azurerm_app_service_plan" "tf_app_service_plan" {
 
 resource "azurerm_app_service" "tf_app_service" {
   name                = "${var.app_name}-service"
-  location            = azurerm_resource_group.tf-rg.location
-  resource_group_name = azurerm_resource_group.tf-rg.name
+  location            = data.azurerm_resource_group.tf-rg.location
+  resource_group_name = data.azurerm_resource_group.tf-rg.name
   app_service_plan_id = azurerm_app_service_plan.tf_app_service_plan.id
 
   app_settings = {

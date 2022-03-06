@@ -1,11 +1,14 @@
-PROJECT=ecsFargateApp
+PROJECT=azureContainerApp
 
 help:
-	@echo "run-local Run terraform apply to provision the infrastructure"
+	@echo "run-remote-backend Run to create a remote backend storage for tf state creation in resource group"
+	@echo "run-apply Run terraform apply to provision the infrastructure"
+	@echo "run-push Tag docker images and push the image to Azure ACR"
 	@echo "run-plan Run terraform plan to preview the stack"
-	@echo "run-destroy Run terraform to destroy the stack"
 	@echo "run-build Build docker containers."
+	@echo "run-push Push the docker images to Azure Container registry"
 	@echo "run-container Run the docker container of this project."
+	@echo "run-destroy Run terraform to destroy the stack"
 	@echo ""
 	@echo "stop-all-containers - Stop all running containers."
 	@echo "clear-all-containers - Remove all docker containers."
@@ -14,21 +17,28 @@ help:
 	@echo "clear-pycache - Remove all __pycache__ folders, will raise errors"
 
 
-run-local: run-plan
+run-remote-backend:
+	sh remote_backend_script.sh
+
+run-apply:
 	terraform apply -auto-approve
 
 run-plan:
 	terraform init
 	terraform plan
 
-run-destroy:
-	terraform destroy -auto-approve
-
 run-build:
 	docker build -t ecs-practical-app .
 
 run-container: run-build
 	docker run -p 5000:5000 -d ecs-practical-app
+
+run-push:
+	docker tag ecs-practical-app:latest azacr1202.azurecr.io/azcontainerapp:latest
+	docker push azacr1202.azurecr.io/azcontainerapp:latest
+
+run-destroy:
+	terraform destroy -auto-approve
 
 stop-all-containers:
 	docker ps -q | xargs -I@ docker stop @
@@ -45,6 +55,6 @@ clear-images: clear-all-containers clear-volumes
 clear-pycache:
 	sudo find . -name "__pycache__" -exec rm -rf {} \;
 
-.PHONY: run-local run-plan run-destroy run-build run-container stop-all-containers clear-all-containers clear-volumes clear-images clear-pycache
+.PHONY: run-remote-backend run-apply run-plan run-destroy run-build run-container stop-all-containers clear-all-containers clear-volumes clear-images clear-pycache
 
 

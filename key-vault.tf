@@ -2,8 +2,8 @@ data "azurerm_client_config" "current" {}
 
 resource "azurerm_key_vault" "tf-key-vault" {
   name                        = "azkeyvault1202"
-  location                    = azurerm_resource_group.tf-rg.location
-  resource_group_name         = azurerm_resource_group.tf-rg.name
+  location                    = data.azurerm_resource_group.tf-rg.location
+  resource_group_name         = data.azurerm_resource_group.tf-rg.name
   enabled_for_disk_encryption = true
   tenant_id                   = data.azurerm_client_config.current.tenant_id
   soft_delete_retention_days  = 7
@@ -17,7 +17,7 @@ resource "azurerm_key_vault" "tf-key-vault" {
 
     key_permissions = ["GET", "List", ]
 
-    secret_permissions = ["GET", "List", "Set",]
+    secret_permissions = ["GET", "List", "Set", ]
 
     storage_permissions = ["GET", "List", ]
   }

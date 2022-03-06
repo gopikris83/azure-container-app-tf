@@ -42,11 +42,19 @@ Application container deployed to print User-Agent Info
 
 ## Usage
 
-Backend is created using Azure storage with container to store the terraform state file.
-
-Azure ACR is created with terraform targets and images are pushed to ACR repo in the region the stack will be created. 
+1. Use below backend script to create resource group and storage backend for storing state file
+```
+Use Make file commands to execute
+$ make run-remote-backend
 
 ```
+2. Build docker images and push to Azure ACR. Make sure the ACR credentials are added in Key vault Secrets for App services to authenticate and pull images.
+
+```
+$ make run-build
+$ make run-push
+
+
 Use Az Login with Service Principal for Azure login. 
 
 Use docker login loginServer(Azure container registry) -u Username and -p Password
@@ -60,9 +68,9 @@ DOCKER_REGISTRY_SERVER_PASSWORD
 
 ```
 
-Use the load balancer dns host to access the docker container app.
+Use the app services endpoint to access the docker container app.
 
-In order to do any changes to the infrastructure you must:
+In order to do deploy or do changes to the infrastructure you must:
 
 * Init/Plan/Apply
 
@@ -81,6 +89,15 @@ terraform apply -target=<resource>
 terraform destroy -target=<resource>
 ```
 
+Alternatively, make file can be used to provision and destroy terraform plan.
+```
+$ make run-plan
+
+$ make run-apply
+
+$ make run-destroy
+
+```
 
 
 
