@@ -73,9 +73,4 @@ jobs:
       uses: peter-murray/github-security-report-action@v2
       with:
         token: ${{ secrets.SECURITY_TOKEN }}
-        
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: reports
-        path: ./*.pdf
+        path: ${{ github.repository }}
